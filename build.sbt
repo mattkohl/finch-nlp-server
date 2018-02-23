@@ -11,4 +11,5 @@ libraryDependencies ++= Seq(
   "io.circe" %% "circe-core" % "0.9.1",
   "io.circe" %% "circe-generic" % "0.9.1",
   "io.circe" %% "circe-parser" % "0.9.1",
+  "com.twitter" %% "twitter-server" % "18.2.0"
 )
