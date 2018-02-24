@@ -18,7 +18,7 @@ object Annotator {
 
   def annotate(text: String): Annotation = pipeline.process(text)
 
-  def buildTree(annotation: Annotation): String = annotation.get(classOf[TreeAnnotation]).asScala.toList.mkString(" ")
+  def parseTree(annotation: Annotation): List[Tree] = annotation.get(classOf[TreeAnnotation]).asScala.toList
 
   def tokenizeAndTag(annotation: Annotation): List[Token] = {
     val tokens = annotation.get(classOf[TokensAnnotation]).asScala.toList
