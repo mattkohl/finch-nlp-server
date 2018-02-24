@@ -23,13 +23,15 @@ import io.finch.syntax._
   */
 object Main extends TwitterServer {
 
-  val port: Flag[Int] = flag("port", 8081, "TCP port for HTTP server")
-
-  def postedSentence: Endpoint[Sentence] = jsonBody[UUID => Sentence] map { in => in(UUID.randomUUID()) }
+  def postedSentence: Endpoint[Sentence] = jsonBody[UUID => Sentence] map {
+    in => in(UUID.randomUUID())
+  }
 
   def postSentence: Endpoint[Sentence] = post("sentences" :: postedSentence) { t: Sentence =>
-    Sentence.save(t)
-    Created(t)
+    val tokens = Annotator.annotate(t.text)
+    val annotated = t.copy(tokens = Some(tokens))
+    Sentence.save(annotated)
+    Created(annotated)
   }
 
   def getSentences: Endpoint[List[Sentence]] = get("sentences") {
@@ -58,8 +60,9 @@ object Main extends TwitterServer {
   }).toServiceAs[Application.Json]
 
   def main(): Unit = {
-    val server = Http.server
-      .serve(s":${port()}", api)
+    val port: Flag[Int] = flag("port", 8081, "TCP port for HTTP server")
+
+    val server = Http.server serve (s":${port()}", api)
 
     onExit { server.close() }
 
