@@ -12,6 +12,8 @@ import io.circe.generic.auto._
 import io.finch._
 import io.finch.circe._
 import io.finch.syntax._
+import edu.stanford.nlp.pipeline.Annotation
+import edu.stanford.nlp.trees.Tree
 
 /**
   * {{{
@@ -28,7 +30,8 @@ object Main extends TwitterServer {
   }
 
   def postSentence: Endpoint[Sentence] = post("sentences" :: postedSentence) { t: Sentence =>
-    val tokens = Annotator.annotate(t.text)
+    val annotation: Annotation = Annotator.annotate(t.text)
+    val tokens: List[Token] = Annotator.tokenizeAndTag(annotation)
     val annotated = t.copy(tokens = Some(tokens))
     Sentence.save(annotated)
     Created(annotated)
