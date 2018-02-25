@@ -1,4 +1,4 @@
-name := "finch-skeleton"
+name := "finch-nlp-server"
 
 version := "0.1"
 
@@ -15,3 +15,8 @@ libraryDependencies ++= Seq(
   "edu.stanford.nlp" % "stanford-corenlp" % "3.8.0",
   "edu.stanford.nlp" % "stanford-corenlp" % "3.8.0" classifier "models",
 )
+
+enablePlugins(JavaAppPackaging)
+enablePlugins(DockerPlugin)
+
+mainClass in Compile := Some("com.mattkohl.nlp.Main")

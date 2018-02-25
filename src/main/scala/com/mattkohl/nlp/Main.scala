@@ -12,9 +12,7 @@ import io.circe.generic.auto._
 import io.finch._
 import io.finch.circe._
 import io.finch.syntax._
-import edu.stanford.nlp.pipeline.Annotation
-import edu.stanford.nlp.trees.Tree
-import scala.util.{Try, Success, Failure}
+import scala.util.{Success, Failure}
 
 /**
   * {{{
