@@ -2,10 +2,11 @@ package com.mattkohl.nlp
 
 import java.util.Properties
 
-import edu.stanford.nlp.ling.CoreAnnotations.{PartOfSpeechAnnotation, TextAnnotation, TokensAnnotation}
+import edu.stanford.nlp.ling.CoreAnnotations.{PartOfSpeechAnnotation, SentencesAnnotation, TextAnnotation, TokensAnnotation}
 import edu.stanford.nlp.pipeline.{Annotation, StanfordCoreNLP}
 import edu.stanford.nlp.trees.TreeCoreAnnotations.TreeAnnotation
 import edu.stanford.nlp.trees.Tree
+import edu.stanford.nlp.util.CoreMap
 
 import scala.collection.JavaConverters._
 
@@ -18,7 +19,9 @@ object Annotator {
 
   def annotate(text: String): Annotation = pipeline.process(text)
 
-  def parseTree(annotation: Annotation): List[Tree] = annotation.get(classOf[TreeAnnotation]).asScala.toList
+  def sentencesAnnotations(annotation: Annotation): List[CoreMap] = annotation.get(classOf[SentencesAnnotation]).asScala.toList
+
+  def parseTree(sentencesAnnotations: List[CoreMap]): List[Tree] = sentencesAnnotations.map(_.get(classOf[TreeAnnotation]))
 
   def tokenizeAndTag(annotation: Annotation): List[Token] = {
     val tokens = annotation.get(classOf[TokensAnnotation]).asScala.toList
