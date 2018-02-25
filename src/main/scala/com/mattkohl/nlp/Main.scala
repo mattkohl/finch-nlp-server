@@ -14,6 +14,7 @@ import io.finch.circe._
 import io.finch.syntax._
 import edu.stanford.nlp.pipeline.Annotation
 import edu.stanford.nlp.trees.Tree
+import scala.util.{Try, Success, Failure}
 
 /**
   * {{{
@@ -29,12 +30,15 @@ object Main extends TwitterServer {
     in => in(UUID.randomUUID())
   }
 
-  def postSentence: Endpoint[Sentence] = post("sentences" :: postedSentence) { t: Sentence =>
-    val annotation: Annotation = Annotator.annotate(t.text)
-    val tokens: List[Token] = Annotator.tokenizeAndTag(annotation)
-    val annotated = t.copy(tokens = Some(tokens))
-    Sentence.save(annotated)
-    Created(annotated)
+  def postSentence: Endpoint[Sentence] = post("sentences" :: postedSentence) { raw: Sentence =>
+    Annotator.annotate(raw) match {
+      case Success(annotated) =>
+        Sentence.save(annotated)
+        Created(annotated)
+      case Failure(_) =>
+        Sentence.save(raw)
+        Created(raw)
+    }
   }
 
   def getSentences: Endpoint[List[Sentence]] = get("sentences") {

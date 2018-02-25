@@ -3,7 +3,7 @@ package com.mattkohl.nlp
 import java.util.UUID
 import scala.collection.mutable
 
-case class Sentence(id: UUID, text: String, tokens: Option[List[Token]])
+case class Sentence(id: UUID, text: String, tokens: Option[List[Token]], parseTree: Option[String])
 
 object Sentence {
 
