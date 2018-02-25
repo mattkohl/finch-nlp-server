@@ -32,7 +32,7 @@ object Annotator {
     }
   }
 
-  def annotate(t: Sentence): Try[Sentence] = for {
+  def annotate(t: Job): Try[Job] = for {
     annotation <- Annotator.getAnnotation(t.text)
     sentencesAnnotations <- Annotator.getSentencesAnnotations(annotation)
     parseTree <- Annotator.buildParseTree(sentencesAnnotations)

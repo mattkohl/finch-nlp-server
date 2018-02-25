@@ -3,35 +3,39 @@
 A basic Core NLP pipeline served with [Finch](https://github.com/finagle/finch). It exposes the following endpoints:
 
 ```
-GET /sentences
-POST /sentences
-DELETE /sentences/<id>
-DELETE /sentences
+GET /jobs
+POST /jobs
+DELETE /jobs/<id>
+DELETE /jobs
 ```
 
-Upon receiving a sentence through `POST`, the service will attempt to tokenize, tag, and dependency-parse the input. 
+Upon receiving a job through `POST`, the service will attempt to tokenize, tag, and dependency-parse the `text` input. 
 
 A successful response will include a list of tokens and parse tree. For example, this request using [HTTPie](https://httpie.org/):
 
 ```bash
-http POST :8081/sentences text="This is a dog."
+http POST :8081/jobs text="It was all a dream."
 ```
 
 would return the following:
 
 ```json
 {
-    "id": "24205ce0-39cb-470c-8079-eeaa12570b09",
-    "parseTree": "(ROOT (S (NP (DT This)) (VP (VBZ is) (NP (DT a) (NN dog))) (. .)))",
-    "text": "This is a dog.",
+    "id": "6d34b552-c075-489f-8c6e-c4f5f58b18a8",
+    "parseTree": "(ROOT (S (NP (PRP It)) (VP (VBD was) (NP (PDT all) (DT a) (NN dream))) (. .)))",
+    "text": "It was all a dream.",
     "tokens": [
         {
-            "partOfSpeech": "DT",
-            "token": "This"
+            "partOfSpeech": "PRP",
+            "token": "It"
         },
         {
-            "partOfSpeech": "VBZ",
-            "token": "is"
+            "partOfSpeech": "VBD",
+            "token": "was"
+        },
+        {
+            "partOfSpeech": "PDT",
+            "token": "all"
         },
         {
             "partOfSpeech": "DT",
@@ -39,7 +43,7 @@ would return the following:
         },
         {
             "partOfSpeech": "NN",
-            "token": "dog"
+            "token": "dream"
         },
         {
             "partOfSpeech": ".",
@@ -47,6 +51,7 @@ would return the following:
         }
     ]
 }
+
 ```
 
 ### Run with Docker

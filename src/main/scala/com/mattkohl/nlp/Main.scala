@@ -24,44 +24,44 @@ import scala.util.{Success, Failure}
   */
 object Main extends TwitterServer {
 
-  def postedSentence: Endpoint[Sentence] = jsonBody[UUID => Sentence] map {
+  def postedJob: Endpoint[Job] = jsonBody[UUID => Job] map {
     in => in(UUID.randomUUID())
   }
 
-  def postSentence: Endpoint[Sentence] = post("sentences" :: postedSentence) { raw: Sentence =>
+  def postJob: Endpoint[Job] = post("jobs" :: postedJob) { raw: Job =>
     Annotator.annotate(raw) match {
       case Success(annotated) =>
-        Sentence.save(annotated)
+        Job.save(annotated)
         Created(annotated)
       case Failure(_) =>
-        Sentence.save(raw)
+        Job.save(raw)
         Created(raw)
     }
   }
 
-  def getSentences: Endpoint[List[Sentence]] = get("sentences") {
-    Ok(Sentence.list())
+  def getJobs: Endpoint[List[Job]] = get("jobs") {
+    Ok(Job.list())
   }
 
-  def deleteSentence: Endpoint[Sentence] = delete("sentences" :: path[UUID]) { id: UUID =>
-    Sentence.get(id) match {
+  def deleteJob: Endpoint[Job] = delete("jobs" :: path[UUID]) { id: UUID =>
+    Job.get(id) match {
       case Some(t) =>
-        Sentence.delete(id)
+        Job.delete(id)
         Ok(t)
-      case None => throw SentenceNotFound(id)
+      case None => throw JobNotFound(id)
     }
   }
 
-  def deleteSentences: Endpoint[List[Sentence]] = delete("sentences") {
-    val all: List[Sentence] = Sentence.list()
-    all.foreach(t => Sentence.delete(t.id))
+  def deleteJobs: Endpoint[List[Job]] = delete("jobs") {
+    val all: List[Job] = Job.list()
+    all.foreach(t => Job.delete(t.id))
     Ok(all)
   }
 
   val api: Service[Request, Response] = (
-    getSentences :+: postSentence :+: deleteSentence :+: deleteSentences
+    getJobs :+: postJob :+: deleteJob :+: deleteJobs
     ).handle({
-    case e: SentenceNotFound => NotFound(e)
+    case e: JobNotFound => NotFound(e)
   }).toServiceAs[Application.Json]
 
   def main(): Unit = {
