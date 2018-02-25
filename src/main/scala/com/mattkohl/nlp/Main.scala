@@ -67,7 +67,7 @@ object Main extends TwitterServer {
   def main(): Unit = {
     val port: Flag[Int] = flag("port", 8081, "TCP port for HTTP server")
 
-    val server = Http.server serve (s":${port()}", api)
+    val server = Http.server serve (s"0.0.0.0:${port()}", api)
 
     onExit { server.close() }
 

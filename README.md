@@ -49,13 +49,15 @@ would return the following:
 }
 ```
 
-### Running
+### Run with Docker
+Thanks to the [SBT Native Packager](https://github.com/sbt/sbt-native-packager), we can build this code into a Docker image:
 
 ```bash
-sbt run
+sbt docker:publishLocal
 ```
 
-### Test
+To run the service inside a container:
 ```bash
-sbt test
+docker run --rm -p8081:8081 finch-nlp-server:0.1  
 ```
+

@@ -18,5 +18,8 @@ libraryDependencies ++= Seq(
 
 enablePlugins(JavaAppPackaging)
 enablePlugins(DockerPlugin)
+enablePlugins(AshScriptPlugin)
 
 mainClass in Compile := Some("com.mattkohl.nlp.Main")
+
+dockerBaseImage := "openjdk:jre-alpine"
