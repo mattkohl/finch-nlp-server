@@ -21,7 +21,7 @@ object Annotator {
 
   def getSentencesAnnotations(annotation: Annotation): Try[List[CoreMap]] = Try(annotation.get(classOf[SentencesAnnotation]).asScala.toList)
 
-  def buildParseTree(sentencesAnnotations: List[CoreMap]): Try[List[Tree]] = Try(sentencesAnnotations.map(_.get(classOf[TreeAnnotation])))
+  def buildParseTrees(sentencesAnnotations: List[CoreMap]): Try[List[Tree]] = Try(sentencesAnnotations.map(_.get(classOf[TreeAnnotation])))
 
   def tokenizeAndTag(annotation: Annotation): Try[List[Token]] = Try {
     val tokens = annotation.get(classOf[TokensAnnotation]).asScala.toList
@@ -35,8 +35,8 @@ object Annotator {
   def annotate(t: Job): Try[Job] = for {
     annotation <- Annotator.getAnnotation(t.text)
     sentencesAnnotations <- Annotator.getSentencesAnnotations(annotation)
-    parseTree <- Annotator.buildParseTree(sentencesAnnotations)
+    parseTrees <- Annotator.buildParseTrees(sentencesAnnotations)
     tokens <- Annotator.tokenizeAndTag(annotation)
-  } yield t.copy(tokens = Some(tokens), parseTree = Some(parseTree.mkString(" ")))
+  } yield t.copy(tokens = Some(tokens), parseTrees = Some(parseTrees.map(_.toString)))
 
 }

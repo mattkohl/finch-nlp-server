@@ -3,7 +3,7 @@ package com.mattkohl.nlp
 import java.util.UUID
 import scala.collection.mutable
 
-case class Job(id: UUID, text: String, tokens: Option[List[Token]], parseTree: Option[String])
+case class Job(id: UUID, text: String, tokens: Option[List[Token]], parseTrees: Option[List[String]])
 
 object Job {
 

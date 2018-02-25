@@ -22,7 +22,9 @@ would return the following:
 ```json
 {
     "id": "6d34b552-c075-489f-8c6e-c4f5f58b18a8",
-    "parseTree": "(ROOT (S (NP (PRP It)) (VP (VBD was) (NP (PDT all) (DT a) (NN dream))) (. .)))",
+    "parseTrees": [
+        "(ROOT (S (NP (PRP It)) (VP (VBD was) (NP (PDT all) (DT a) (NN dream))) (. .)))"
+    ],
     "text": "It was all a dream.",
     "tokens": [
         {
