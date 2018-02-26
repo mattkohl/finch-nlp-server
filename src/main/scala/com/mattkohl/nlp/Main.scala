@@ -12,7 +12,6 @@ import io.circe.generic.auto._
 import io.finch._
 import io.finch.circe._
 import io.finch.syntax._
-import scala.util.{Success, Failure}
 
 /**
   * {{{
@@ -30,12 +29,14 @@ object Main extends TwitterServer {
 
   def postJob: Endpoint[Job] = post("jobs" :: postedJob) { raw: Job =>
     Annotator.annotate(raw) match {
-      case Success(annotated) =>
-        Job.save(annotated)
-        Created(annotated)
-      case Failure(_) =>
-        Job.save(raw)
-        Created(raw)
+      case Right(annotated) =>
+        val succeeded = annotated.copy(status=Some("SUCCESS"))
+        Job.save(succeeded)
+        Created(succeeded)
+      case Left(message) =>
+        val failed = raw.copy(status=Some(s"FAILURE: $message"))
+        Job.save(failed)
+        Created(failed)
     }
   }
 

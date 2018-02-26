@@ -7,7 +7,8 @@ import edu.stanford.nlp.pipeline.{Annotation, StanfordCoreNLP}
 import edu.stanford.nlp.trees.TreeCoreAnnotations.TreeAnnotation
 import edu.stanford.nlp.trees.Tree
 import edu.stanford.nlp.util.CoreMap
-import scala.util.Try
+
+import scala.util.{Try, Success, Failure}
 import scala.collection.JavaConverters._
 
 case class Token(token: String, partOfSpeech: String)
@@ -32,11 +33,17 @@ object Annotator {
     }
   }
 
-  def annotate(t: Job): Try[Job] = for {
-    annotation <- Annotator.getAnnotation(t.text)
-    sentencesAnnotations <- Annotator.getSentencesAnnotations(annotation)
-    parseTrees <- Annotator.buildParseTrees(sentencesAnnotations)
-    tokens <- Annotator.tokenizeAndTag(annotation)
-  } yield t.copy(tokens = Some(tokens), parseTrees = Some(parseTrees.map(_.toString)))
-
+  def annotate(t: Job): Either[String, Job] = {
+    val piped: Try[Job] = for {
+      annotation <- Annotator.getAnnotation(t.text)
+      sentencesAnnotations <- Annotator.getSentencesAnnotations(annotation)
+      parseTrees <- Annotator.buildParseTrees(sentencesAnnotations)
+      tokens <- Annotator.tokenizeAndTag(annotation)
+    } yield t.copy(tokens = Some(tokens), parseTrees = Some(parseTrees.map(_.toString)))
+    piped match {
+      case Success(result) => Right(result)
+      case Failure(e) => Left(s"Annotation failed: $e")
+    }
+  }
 }
+
