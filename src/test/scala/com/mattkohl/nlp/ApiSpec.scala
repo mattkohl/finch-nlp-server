@@ -14,7 +14,6 @@ import org.scalatest.{FlatSpec, Matchers}
 import org.scalatest.prop.Checkers
 
 
-
 @RunWith(classOf[JUnitRunner])
 class ApiSpec extends FlatSpec with Matchers with Checkers {
   import Main._
@@ -59,36 +58,49 @@ class ApiSpec extends FlatSpec with Matchers with Checkers {
   behavior of "the getJobs endpoint"
 
   it should "retrieve all available Jobs" in {
-    getJobs(Input.get("/jobs")).awaitValueUnsafe() shouldBe Some(Job.list())
+    getJobs(Input.get("/jobs"))
+      .awaitValueUnsafe() shouldBe Some(Job.list())
   }
 
   behavior of "the deleteJob endpoint"
 
   it should "delete the specified job" in {
-    val job = createJob()
+    val job = createJob("LAPD can't see me, I wear a Muslim beanie")
 
-    deleteJob(Input.delete(s"/jobs/${job.id}")).awaitValueUnsafe() shouldBe Some(job)
+    deleteJob(Input.delete(s"/jobs/${job.id}"))
+      .awaitValueUnsafe() shouldBe Some(job)
     Job.get(job.id) shouldBe None
   }
 
   it should "throw an exception if the UUID hasn't been found" in {
     val id = UUID.randomUUID()
     Job.get(id) shouldBe None
-    a[JobNotFound] shouldBe thrownBy(deleteJob(Input.delete(s"/jobs/$id")).awaitValueUnsafe())
+    a[JobNotFound] shouldBe thrownBy(
+      deleteJob(Input.delete(s"/jobs/$id"))
+        .awaitValueUnsafe()
+    )
   }
 
   behavior of "the deleteJobs endpoint"
 
   it should "delete all jobs" in {
     val jobs = Job.list()
-    deleteJobs(Input.delete("/jobs")).awaitValueUnsafe() shouldBe Some(jobs)
-    jobs.foreach(t => Job.get(t.id) shouldBe None)
+    deleteJobs(Input.delete("/jobs"))
+      .awaitValueUnsafe() shouldBe Some(jobs)
+    jobs foreach (job => Job.get(job.id) shouldBe None)
   }
 
-  private def createJob(): Job = {
-    val job = Job(UUID.randomUUID(), "LAPD can't see me, I wear a muslim beanie", None, None, None)
-    Job.save(job)
-    job
+  private def createJob(text: String): Job = {
+    val job = Job(UUID.randomUUID(), text, None, None, None)
+    Annotator.annotate(job) match {
+      case Right(j) =>
+        val done = j.copy(status=Some("SUCCESS"))
+        Job save done
+        done
+      case Left(_) =>
+        Job.save(job)
+        job
+    }
   }  
 
 }
