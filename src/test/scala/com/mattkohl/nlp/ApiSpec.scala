@@ -4,7 +4,6 @@ package com.mattkohl.nlp
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import com.twitter.finagle.http.Status
-import com.twitter.io.Buf
 import io.circe.generic.auto._
 import io.finch._
 import io.finch.circe._
@@ -40,7 +39,7 @@ class ApiSpec extends FlatSpec with Matchers with Checkers {
 
   implicit def arbitraryJobWithoutId: Arbitrary[JobWithoutId] = Arbitrary(genJobWithoutId)
 
-  it should "create a job" in {
+  it should "create a Job" in {
     check { (jobWithoutId: JobWithoutId) =>
       val input = Input.post("/jobs")
         .withBody[Application.Json](jobWithoutId, Some(StandardCharsets.UTF_8))
@@ -56,5 +55,41 @@ class ApiSpec extends FlatSpec with Matchers with Checkers {
       Job.get(job.id).isDefined === true
     }
   }
+
+  behavior of "the getJobs endpoint"
+
+  it should "retrieve all available Jobs" in {
+    getJobs(Input.get("/jobs")).awaitValueUnsafe() shouldBe Some(Job.list())
+  }
+
+  behavior of "the deleteJob endpoint"
+
+  it should "delete the specified job" in {
+    val job = createJob()
+
+    deleteJob(Input.delete(s"/jobs/${job.id}")).awaitValueUnsafe() shouldBe Some(job)
+    Job.get(job.id) shouldBe None
+  }
+
+  it should "throw an exception if the UUID hasn't been found" in {
+    val id = UUID.randomUUID()
+    Job.get(id) shouldBe None
+    a[JobNotFound] shouldBe thrownBy(deleteJob(Input.delete(s"/jobs/$id")).awaitValueUnsafe())
+  }
+
+  behavior of "the deleteJobs endpoint"
+
+  it should "delete all jobs" in {
+    val jobs = Job.list()
+    deleteJobs(Input.delete("/jobs")).awaitValueUnsafe() shouldBe Some(jobs)
+    jobs.foreach(t => Job.get(t.id) shouldBe None)
+  }
+
+  private def createJob(): Job = {
+    val job = Job(UUID.randomUUID(), "LAPD can't see me, I wear a muslim beanie", None, None, None)
+    Job.save(job)
+    job
+  }  
+  
 
 }
