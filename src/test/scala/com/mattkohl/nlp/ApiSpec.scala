@@ -90,6 +90,5 @@ class ApiSpec extends FlatSpec with Matchers with Checkers {
     Job.save(job)
     job
   }  
-  
 
 }
