@@ -14,6 +14,9 @@ libraryDependencies ++= Seq(
   "com.twitter" %% "twitter-server" % "18.2.0",
   "edu.stanford.nlp" % "stanford-corenlp" % "3.8.0",
   "edu.stanford.nlp" % "stanford-corenlp" % "3.8.0" classifier "models",
+  "org.scalacheck" %% "scalacheck" % "1.13.5" % "test",
+  "org.scalatest" %% "scalatest" % "3.0.5" % "test",
+  "junit" % "junit" % "4.12" % "test"
 )
 
 enablePlugins(JavaAppPackaging)
