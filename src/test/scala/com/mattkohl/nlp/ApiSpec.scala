@@ -43,10 +43,10 @@ class ApiSpec extends FlatSpec with Matchers with Checkers {
       val input = Input.post("/jobs")
         .withBody[Application.Json](jobWithoutId, Some(StandardCharsets.UTF_8))
 
-      val res = postJob(input)
-      res.awaitOutputUnsafe().map(_.status) === Some(Status.Created)
-      res.awaitValueUnsafe().isDefined === true
-      val Some(job) = res.awaitValueUnsafe()
+      val result = postJob(input)
+      result.awaitOutputUnsafe().map(_.status) === Some(Status.Created)
+      result.awaitValueUnsafe().isDefined === true
+      val Some(job) = result.awaitValueUnsafe()
       job.text === jobWithoutId.text
       job.tokens === jobWithoutId.tokens
       job.parseTrees === jobWithoutId.parseTrees
