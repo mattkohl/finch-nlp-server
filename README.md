@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/mattkohl/finch-nlp-server.svg?branch=master)](https://travis-ci.org/mattkohl/finch-nlp-server)
+
 # Finch NLP server
 
 A basic Core NLP pipeline served with [Finch](https://github.com/finagle/finch). It exposes the following endpoints:
