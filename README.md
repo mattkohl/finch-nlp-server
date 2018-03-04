@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/mattkohl/finch-nlp-server.svg?branch=master)](https://travis-ci.org/mattkohl/finch-nlp-server)[![Coverage Status](https://coveralls.io/repos/github/mattkohl/finch-nlp-server/badge.svg?branch=master)](https://coveralls.io/github/mattkohl/finch-nlp-server?branch=master)
+[![Build Status](https://travis-ci.org/mattkohl/finch-nlp-server.svg?branch=master)](https://travis-ci.org/mattkohl/finch-nlp-server) [![Coverage Status](https://coveralls.io/repos/github/mattkohl/finch-nlp-server/badge.svg?branch=master)](https://coveralls.io/github/mattkohl/finch-nlp-server?branch=master)
 
 # Finch NLP server
 
