@@ -16,8 +16,6 @@ object Job {
 
 }
 
-case class JobNotFound(id: UUID) extends Exception {
-  override def getMessage: String = s"Job(${id.toString}) not found."
-}
+case class JobNotFound(id: UUID) extends Exception
 
 

@@ -38,7 +38,7 @@ class ApiSpec extends FlatSpec with Matchers with Checkers {
 
   implicit def arbitraryJobWithoutId: Arbitrary[JobWithoutId] = Arbitrary(genJobWithoutId)
 
-  it should "create a Job" in {
+  it should "create a Job with successful annotations" in {
     check { (jobWithoutId: JobWithoutId) =>
       val input = Input.post("/jobs")
         .withBody[Application.Json](jobWithoutId, Some(StandardCharsets.UTF_8))
